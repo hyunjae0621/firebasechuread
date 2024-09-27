@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 
+
+
 const SignUp = () => {
   // logic
   const history = useNavigate();

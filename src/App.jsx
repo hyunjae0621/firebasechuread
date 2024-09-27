@@ -1,27 +1,31 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
+
 import Post from "./pages/Post";
 import Profile from "./pages/Profile";
 import { useEffect, useState } from "react";
 import Edit from "./pages/Edit";
 import { auth } from "./firebase";
 import { delay } from "./lib/common";
+import Private from "./pages/Private";
+import SignUp from './pages/SignUp';
+
+
+
+
+
 
 function App() {
   // logic
-  const [churead, setChuread] = useState("");
+
+
   const [editItem, setEditItem] = useState(null);
   const [editedItem, setEditedItem] = useState(null);
 
   // 로딩 상태
   const [isLoading, setIsLoading] = useState(true);
 
-  const handlePost = (churead) => {
-    // 매개변수, parameter
-    setChuread(churead);
-  };
 
   const init = async () => {
     // 로그인 상태 변화 감지하기
@@ -47,29 +51,31 @@ function App() {
         <div className="max-w-[572px] mx-auto h-full">
           <BrowserRouter>
             <Routes>
-              <Route
-                path="/"
-                element={
-                  <Home
-                    churead={churead}
-                    editedItem={editedItem}
-                    onEdit={(data) => setEditItem(data)}
-                  />
-                }
-              />
+              {/** 로그인 사용자만 접근 가능한 페이지 */}
+              <Route path="/" element={<Private />}>
+                <Route path="" element={<Home
+                      editedItem={editedItem}
+                      onEdit={(data) => setEditItem(data)}
+                    />
+                  }
+                />
+                <Route path="post" element={<Post />} />
+                <Route path="edit"
+                  element={
+                    <Edit
+                      editItem={editItem}
+                      onEdited={(data) => setEditedItem(data)}
+                    />
+
+                  } />
+                <Route path="profile" element={<Profile />} />
+
+              </Route>
+              {/** 로그인 사용자만 접근 가능한 페이지 */}
+
               <Route path="/login" element={<Login />} />
               <Route path="/sign-up" element={<SignUp />} />
-              <Route path="/post" element={<Post onPost={handlePost} />} />
-              <Route
-                path="/edit"
-                element={
-                  <Edit
-                    editItem={editItem}
-                    onEdited={(data) => setEditedItem(data)}
-                  />
-                }
-              />
-              <Route path="/profile" element={<Profile />} />
+
             </Routes>
           </BrowserRouter>
         </div>

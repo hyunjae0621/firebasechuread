@@ -1,21 +1,32 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+
+
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+// import { getAnalytics } from 'firebase/analytics';
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCdKN_96vDSn-ymunKwDgYWc8P0lc_irog",
-  authDomain: "chreads0925.firebaseapp.com",
-  projectId: "chreads0925",
-  storageBucket: "chreads0925.appspot.com",
-  messagingSenderId: "539845461532",
-  appId: "1:539845461532:web:e4287804ac7b2f0fb441d9",
+  apiKey: 'AIzaSyAOQrFzpM3xEA9UXvZXMEZY1MHqeXiwU84',
+  authDomain: 'fir-churead.firebaseapp.com',
+  projectId: 'fir-churead',
+  storageBucket: 'fir-churead.appspot.com',
+  messagingSenderId: '189709563301',
+  appId: '1:189709563301:web:94534c75c7835590d9a44c',
+  measurementId: 'G-TJ6DPMYT1N',
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// 우리 프로젝트에 대한 인증 서비스를 사용하겠다라는 의미
-export const auth = getAuth(app);
+//인증서비스를 사용하겠다는 의미
+ export const auth = getAuth(app);
+
+ //우리 프로젝트에 대한 데이터베이스 서비스를 사용하겠다 라는 의미
+export const db = getFirestore(app);
+

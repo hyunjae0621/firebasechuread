@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import InputField from "../components/InputField";
 import LoginButton from "../components/LoginButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth } from "../firebase";
 
 const Login = () => {
   // logic
@@ -20,8 +22,14 @@ const Login = () => {
    * 5. handleLogin에서 email, password 의 값을 확인한다.
    */
 
+  const history = useNavigate()
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   // const [formData, setFormData] = useState({
   //   email: "",
@@ -40,12 +48,70 @@ const Login = () => {
     }
   };
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault(); // 폼 제출시 새로고침 방지 메소드
     console.log("email", email);
     console.log("password", password);
     // TODO: 로그인 기능 구현
+
+    //사용자가 email, password값 작성 안하면 실행 안함.
+    if (isLoading || !email || !password) return;
+    // console.log("email", email);
+    // console.log("password", password);
+
+
+
+    setIsLoading(false)
+
+    try {
+      //비동기처리 성공시
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      console.log(userCredential)
+      history("/")
+    } catch (error) {
+      //비동기처리 실패시
+      console.log(errorMessage)
+      setErrorMessage(
+        error.code === "auth/invalid-credential"
+          ? "아이디/비밀번호가 정확하지 않습니다" : error.message);
+
+    } finally {
+      setIsLoading(false)
+      //성공, 실패 상관없이 마지막에 실행
+
+    }
+
   };
+
+  const handleGoogleLogin = async () => {
+    //구글 provider 설정 
+    const provider = new GoogleAuthProvider()
+
+
+    try {
+      // 1. 팝업띄워서 구글 로그인 
+      await signInWithPopup(auth, provider)
+      // 2. 홈 화면으로 리다이렉트
+      history("/")
+    } catch (error) {
+      console.log("🚀 error", error)
+
+
+
+    }
+  }
+
+
+
+
+
+
+
 
   // view
   return (
@@ -76,7 +142,9 @@ const Login = () => {
             field="password"
             onChange={handleInputChange}
           />
-          <LoginButton category="login" text="Login" />
+
+          {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+          <LoginButton category="login" text={isLoading ? "Loading..." : "Login"} />
         </form>
         {/* END: 폼 영역 */}
         <div className="flex justify-center gap-1 py-6">
@@ -91,7 +159,7 @@ const Login = () => {
           <span className="bg-churead-black relative z-10 px-2"> or </span>{" "}
         </p>
         {/* START: 소셜 로그인 영역 */}
-        <LoginButton category="socialLogin" text="Continue with Google" />
+        <LoginButton category="socialLogin" text="Continue with Google" onClick={handleGoogleLogin} />
         {/* END: 소셜 로그인 영역 */}
       </div>
     </div>

@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PostInput from "../components/PostInput";
+import { auth, db } from '../firebase';
+import { addDoc, collection } from "firebase/firestore";
 
-const Post = ({ onPost }) => {
+
+const Post = () => {
   // logic
+
+  const user = auth.currentUser
   const history = useNavigate();
   const [churead, setChuread] = useState("");
 
@@ -11,7 +16,7 @@ const Post = ({ onPost }) => {
     setChuread(value);
   };
 
-  const handlePost = (event) => {
+  const handlePost = async (event) => {
     event.preventDefault(); // 폼 제출시 새로고침 방지 메소드
 
     // 1. 텍스트에서 불필요한 공백 제거하기
@@ -25,11 +30,39 @@ const Post = ({ onPost }) => {
       alert("츄레드를 입력해주세요");
       return;
     }
+    try {
+
+      const newFeed = {
+        useId: user.uid,
+        userName: user.displayName || 'Anonymous'
+        ,
+        userProfileImage: user.photoURL || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y",
+        churead: churead,
+        likeCount: 0,
+        createAt: Date.now()
+      };
+
+      await addDoc(collection(db, 'chureads'), newFeed)
+
+    } catch (error) {
+      console.error(error)
+
+
+    }
+
+
 
     // 빈 스트링이 아닌 경우
-    onPost(churead); // 부모에게 churead입력값 넘겨주기
+
     history("/"); // home화면으로 이동
   };
+
+  //ToDo : 이벤트 올리는 것 삭제 예정 
+
+  //파이어베이스에 아이템 추가
+
+
+
 
   // view
   return (
@@ -45,9 +78,14 @@ const Post = ({ onPost }) => {
       </header>
       <main className="h-full pt-[72px] pb-[88px] overflow-hidden">
         <div className="h-full overflow-auto">
+
+
+
           <form id="post" onSubmit={handlePost}>
             {/* START: 사용자 입력 영역 */}
-            <PostInput onChange={handleChange} />
+            <PostInput userName={user.displayName}
+              userProfileImage={user.photoURL || undefined}
+              onChange={handleChange} />
             {/* END: 사용자 입력 영역 */}
             {/* START: 게시 버튼 영역 */}
             <div className="w-full max-w-[572px] flex items-center fixed bottom-0 lef p-6">
@@ -63,6 +101,9 @@ const Post = ({ onPost }) => {
             </div>
             {/* END: 게시 버튼 영역 */}
           </form>
+
+
+          
         </div>
       </main>
     </div>
