@@ -11,25 +11,27 @@ import { useNavigate } from "react-router-dom";
 const Home = ({ editedItem, onEdit }) => {
   // logic
 
-
- 
   const user = auth.currentUser
   const history = useNavigate()
   let unsubscribe = null;
 
+
+
+  
 
   const [feedList, setFeedList] = useState([]);
 
   //setFeedList(filterList)
 
   const handleEdit = (data) => {
+    
     // 인자, argument
     onEdit(data); // 부모에게 수정할 객체 아이템 넘겨주기
     history("/edit"); // edit페이지로 이동
   };
 
   const handleDelete = async (selectedItem) => {
-    if (selectedItem.userId !== user.uid) return;
+    if (selectedItem.useId !== user.uid) return;
     try {
       await deleteDoc(doc(db, 'chureads', selectedItem.id))
     } catch (error) {
@@ -38,7 +40,7 @@ const Home = ({ editedItem, onEdit }) => {
 
 
 
-    if (selectedItem.userId !== user.uid) {
+    if (selectedItem.useId !== user.uid) {
       console.log("🚀selectedItem:", selectedItem)
       console.log("user", user)
 
@@ -82,13 +84,13 @@ const Home = ({ editedItem, onEdit }) => {
   }
 
 
-  const handleLike = async(selectedItem) => {
+  const handleLike = async (selectedItem) => {
 
     console.log("좋아요")
     //파이어 베이스에게 likeCount의 값을 1씩 증가시키는 걸로
-    
-    await updateDoc(doc(db, 'chureads', selectedItem.id), { likeCount: increment(-1) }) 
-    
+
+    await updateDoc(doc(db, 'chureads', selectedItem.id), { likeCount: increment(1) })
+
 
 
   }

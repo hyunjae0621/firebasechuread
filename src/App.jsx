@@ -21,7 +21,7 @@ function App() {
 
 
   const [editItem, setEditItem] = useState(null);
-  const [editedItem, setEditedItem] = useState(null);
+ 
 
   // 로딩 상태
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +54,7 @@ function App() {
               {/** 로그인 사용자만 접근 가능한 페이지 */}
               <Route path="/" element={<Private />}>
                 <Route path="" element={<Home
-                      editedItem={editedItem}
+                    
                       onEdit={(data) => setEditItem(data)}
                     />
                   }
@@ -64,7 +64,6 @@ function App() {
                   element={
                     <Edit
                       editItem={editItem}
-                      onEdited={(data) => setEditedItem(data)}
                     />
 
                   } />

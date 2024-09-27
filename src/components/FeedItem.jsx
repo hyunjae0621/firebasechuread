@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { RiHeartLine, RiPencilFill } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa6";
-import { auth, db } from "../firebase";
+import { auth } from "../firebase";
+
 
 
 const FeedItem = ({ data, onEdit, onDelete, onLike }) => {
   // logic
   const { userName, userProfileImage, churead, likeCount } = data;
+
+
   const user = auth.currentUser
-
-
+  const isSame = (user.uid === data.useId)
+  console.log("🚀 ~ FeedItem ~ isSame:", isSame)
 
 
   const handleDelete = () => {
@@ -22,11 +25,9 @@ const FeedItem = ({ data, onEdit, onDelete, onLike }) => {
   };
 
 
-  const isSame = (user.uid === data.useId)
-  console.log("🚀 ~ FeedItem ~ isSame:", isSame)
 
 
-  
+
   // view
   return (
     <li className="border-t border-churead-gray-300 border-opacity-15 px-6 py-3">
@@ -40,9 +41,9 @@ const FeedItem = ({ data, onEdit, onDelete, onLike }) => {
         <div className="w-full">
           <div className="flex items-center">
             <span className="font-bold">{userName}</span>
-            
-            
-            
+
+
+
             {/* START: 수정, 삭제 버튼 영역 
             currentUser.uid = useId 인 FeedItem 에 대해서는 div 가 보이고
             currentUser.uid !== useId 인 FeedItem 에 대해서는 div 가 보이지 않는다.
@@ -67,7 +68,7 @@ const FeedItem = ({ data, onEdit, onDelete, onLike }) => {
           {/* START: 좋아요 영역 */}
           <div className="flex items-center gap-1">
             <button type="button" className="text-churead-gray-400">
-              <RiHeartLine onClick={() => onLike(data)}/>
+              <RiHeartLine onClick={() => onLike(data)} />
               {/* <RiHeartFill color="red" /> */}
             </button>
             <span>{likeCount}</span>
